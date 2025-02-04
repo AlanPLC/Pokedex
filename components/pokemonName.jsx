@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing, interpolateColor, withRepeat } from "react-native-reanimated";
 
-export default function RainbowText({ text }) {
+export default function RainbowName({ name }) {
   const progress = useSharedValue(0);
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export default function RainbowText({ text }) {
             textShadowOffset: { width: 2, height: 2 },
             textShadowRadius: 2,
             marginBottom: 15}, animatedStyle]}>
-      {text}
+      {name}
     </Animated.Text>
   );
 }

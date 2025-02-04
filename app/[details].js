@@ -1,5 +1,5 @@
 import { useLocalSearchParams, Stack } from "expo-router";
-import PokeInfo from "../components/pokeInfo.jsx";
+import PokeInfo from "./pokeInfo.jsx";
 import { View } from "react-native";
 
 export default function Details() {

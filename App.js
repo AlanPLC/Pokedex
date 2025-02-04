@@ -2,14 +2,14 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { Main } from "./components/main.jsx"
+import { Pokedex } from "./components/pokedex.jsx"
 
 export default function App() {
   return (
     <SafeAreaProvider>
       <View style={styles.container}>
         <StatusBar style="auto" />
-        <Main />
+        <Pokedex />
       </View>
     </SafeAreaProvider>
   );

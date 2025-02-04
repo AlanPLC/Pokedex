@@ -3,7 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { View, ActivityIndicator, FlatList, Text, Image, Pressable } from "react-native";
 import { Link } from "expo-router";
 
-export default function Main() {
+export default function Pokedex() {
   const { listaPokemon, error, isFetchingMore, handleLoadMore } = useFetchPokemons();
 
   if (listaPokemon.length === 0) {

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import useFetchPokemons from "../hooks/usePokeApi.jsx";
 import { View, Text, Image, ActivityIndicator } from "react-native";
-import RainbowText from "./nombrePokemon.jsx";
-import typeImages from "./tiposPokemon.jsx";
+import RainbowName from "../components/pokemonName.jsx";
+import typeImages from "../components/pokemonTypes.jsx";
 
 export default function PokeInfo({ details }) {
     const { fetchPokemonById } = useFetchPokemons();
@@ -66,7 +66,7 @@ export default function PokeInfo({ details }) {
                 textShadowRadius: 3}}
                 >ID: #{id}
             </Text>
-            <RainbowText text={name}/>      
+            <RainbowName text={name}/>      
 
             {/* Tipos */}
             <View style={{display:"flex", flexDirection:"row", gap:10, width:"100%", alignItems:"center"}}>

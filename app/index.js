@@ -1,5 +1,5 @@
-    import Main from "../components/main.jsx"
+    import Pokedex from "./pokedex.jsx"
 
     export default function Index(){
-        return <Main />;
+        return <Pokedex />;
     }
