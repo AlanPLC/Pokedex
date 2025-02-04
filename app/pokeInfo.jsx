@@ -66,6 +66,7 @@ export default function PokeInfo({ details }) {
                 textShadowRadius: 3}}
                 >ID: #{id}
             </Text>
+            {/* <Text>LOL</Text> */}
             <RainbowName text={name}/>      
 
             {/* Tipos */}

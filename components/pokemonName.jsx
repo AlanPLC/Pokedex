@@ -12,7 +12,7 @@ export default function RainbowName({ name }) {
         easing: Easing.linear,
       }),
       -1, // -1 indica un bucle infinito
-      false // `false` para que la animación no se invierta al reiniciarse
+      false // false para que la animación no se invierta al reiniciarse
     );
   }, []);
 
