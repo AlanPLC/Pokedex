@@ -32,6 +32,7 @@ export default function PokeInfo({ details }) {
     console.log(pokemon)
     const { image, id, name, species, description, height, weight, type, abilities} = pokemon;
     
+    
     return (
         <View style={{ flex: 1, padding: 22, alignItems:"center", backgroundColor:"white", gap:5}}>
             {/* Imagen y Borde circular  */}
@@ -66,8 +67,7 @@ export default function PokeInfo({ details }) {
                 textShadowRadius: 3}}
                 >ID: #{id}
             </Text>
-            {/* <Text>LOL</Text> */}
-            <RainbowName text={name}/>      
+            <RainbowName name={name}/>      
 
             {/* Tipos */}
             <View style={{display:"flex", flexDirection:"row", gap:10, width:"100%", alignItems:"center"}}>

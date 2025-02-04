@@ -12,7 +12,7 @@ export default function RainbowName({ name }) {
         easing: Easing.linear,
       }),
       -1, // -1 indica un bucle infinito
-      false // false para que la animación no se invierta al reiniciarse
+      false // `false` para que la animación no se invierta al reiniciarse
     );
   }, []);
 
@@ -21,7 +21,7 @@ export default function RainbowName({ name }) {
     const color = interpolateColor(
       progress.value,
       [0, 0.2, 0.4, 0.6, 0.8, 1],
-      ["#C0C0C0", "#D4AF37", "#FFD700", "#FFD700", "#D4AF37", "#C0C0C0"]
+      ["#FFD700", "#FFA500", "#FF8C00", "#FF8C00", "#FFA500", "#FFD700"]
     );
 
     return {
