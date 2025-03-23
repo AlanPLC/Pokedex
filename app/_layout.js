@@ -38,19 +38,17 @@ export default function Layout() {
                 {!searchVisible ? (
                 <TouchableOpacity 
                 onPressOut={handleSearch}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 style={{margin: 0, position: "fixed"}}
                 >
-                  <AntDesign name="search1" size={30} color="black" style={{marginRight: 5}}/>
+                  <AntDesign name="search1" size={25} color="black" style={{marginRight: 5}}/>
                 </TouchableOpacity>
           
               ):( 
                 <>
                 <TouchableOpacity 
                 onPressOut={handleSearch}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 style={{margin: 0}}>
-                <AntDesign name="close" size={30} color="black" style={{marginRight: 5}}/>
+                <AntDesign name="close" size={25} color="black" style={{marginRight: 5}}/>
                 </TouchableOpacity>
                 <TextInput
                 placeholder="Buscar Pokémon"

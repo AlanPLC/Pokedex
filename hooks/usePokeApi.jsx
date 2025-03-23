@@ -5,6 +5,7 @@ export default function useFetchPokemons() {
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const limite = 20
 
   const detallesFetch = async () => {
@@ -16,6 +17,11 @@ export default function useFetchPokemons() {
       }
       const data = await response.json();
       const pokemons = data.results;
+
+      if(pokemons.length == 0){
+        setHasMore(false);
+        return;
+      }
 
       const listaDetallada = await Promise.all(
         pokemons.map(async (pokemon, index) => {
@@ -49,6 +55,7 @@ export default function useFetchPokemons() {
   useEffect(() => {
     detallesFetch();
   }, [page]);
+
 
   const handleLoadMore = () => {
     if (!isFetchingMore) {
@@ -110,5 +117,5 @@ export default function useFetchPokemons() {
     }
   };
 
-  return { listaPokemon, error, limite, isFetchingMore, fetchPokemonById ,handleLoadMore};
+  return { listaPokemon, error, limite, isFetchingMore, hasMore, fetchPokemonById, handleLoadMore};
 }
