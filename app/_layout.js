@@ -1,12 +1,11 @@
 import { Stack } from "expo-router";
-import { View, Image, Pressable, TextInput, TouchableOpacity} from "react-native";
+import { View, Image, TextInput, TouchableOpacity } from "react-native";
 import logo from "../assets/pokebola.png"
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { useState, useEffect } from 'react'
-
+import { useState, createContext } from 'react'
+import { SearchContext } from "../hooks/searchContext.js";
 
 export default function Layout() {
-
   const [searchVisible, setSearchVisible] = useState(false)
   const [search, setSearch] = useState("")
 
@@ -17,7 +16,7 @@ export default function Layout() {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <SearchContext.Provider value={{search, setSearch}}>
       <Stack
         screenOptions={{
             headerStyle: { backgroundColor: "#ffbc03" },
@@ -25,18 +24,22 @@ export default function Layout() {
             headerTitle: "Pokedex",
             headerTitleStyle: { fontWeight: "bold" },
             headerLeft: ()=> (
+              
+              <TouchableOpacity
+                >
                 <Image 
                 source={logo}
                 style={{ width: 50, height: 50 }}
                 />
+              </TouchableOpacity>
             ),
             headerRight: () => (
               <View style={{display: "flex", flexDirection:"row", alignItems:"center"}}>
                 {!searchVisible ? (
                 <TouchableOpacity 
-                onPress={handleSearch}
+                onPressOut={handleSearch}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                style={{margin: 0}}
+                style={{margin: 0, position: "fixed"}}
                 >
                   <AntDesign name="search1" size={30} color="black" style={{marginRight: 5}}/>
                 </TouchableOpacity>
@@ -44,10 +47,10 @@ export default function Layout() {
               ):( 
                 <>
                 <TouchableOpacity 
-                onPress={handleSearch}
+                onPressOut={handleSearch}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 style={{margin: 0}}>
-                  <AntDesign name="close" size={30} color="black" style={{marginRight: 5}}/>
+                <AntDesign name="close" size={30} color="black" style={{marginRight: 5}}/>
                 </TouchableOpacity>
                 <TextInput
                 placeholder="Buscar Pokémon"
@@ -55,13 +58,13 @@ export default function Layout() {
                 onChangeText={setSearch}
                 style={{
                    
-                  borderBottomWidth: 1, borderBottomColor: "#000", marginBottom: 0 }}
+                  borderBottomWidth: 1, borderBottomColor: "#000", marginBottom: 0, minWidth: 120}}
               />
                 </>
               )}
               </View>
       )}}
       />
-    </View>
+    </SearchContext.Provider>
   );
 }

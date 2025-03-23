@@ -2,17 +2,27 @@ import useFetchPokemons from "../hooks/usePokeApi.jsx";
 import { StatusBar } from "expo-status-bar";
 import { View, ActivityIndicator, FlatList, Text, Image, Pressable } from "react-native";
 import { Link } from "expo-router";
+import { SearchContext } from "../hooks/searchContext.js";
+import { useContext } from "react";
 
 export default function Pokedex() {
   const { listaPokemon, error, isFetchingMore, handleLoadMore } = useFetchPokemons();
+  const { search, setSearch } = useContext(SearchContext);
 
-  if (listaPokemon.length === 0) {
+  const filteredPokemons = listaPokemon.filter(pokemon => pokemon.name.toLowerCase().includes(search.toLowerCase()));
+
+  if (filteredPokemons.length === 0) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center"}}>
-        <ActivityIndicator size="large" color="black" />
+        <Text style={{ fontSize: 20, marginBottom: 20 }}>No se encontraron resultados.</Text>
+        <Pressable onPress={() => setSearch("")}>
+          <Text style={{ fontSize: 16, color: "#ffbc03" }}>Limpiar búsqueda</Text>
+        </Pressable>
       </View>
     );
   }
+
+
   if (error) {
     return (
       <View>
@@ -59,7 +69,7 @@ export default function Pokedex() {
   return (
     <View style={{backgroundColor:"#fff"}}>
       <FlatList
-        data={listaPokemon}
+        data={filteredPokemons}
         keyExtractor={(item, index) => `${item.id}-${index}`}
         renderItem={renderItem}
         initialNumToRender={20}
