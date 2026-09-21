@@ -6,7 +6,9 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "scheme": ["pokeapi"],
+    "scheme": [
+      "pokeapi"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -28,7 +30,9 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-audio",
+      "expo-asset"
     ]
   }
 }

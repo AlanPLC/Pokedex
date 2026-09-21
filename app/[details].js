@@ -1,4 +1,4 @@
-import { useLocalSearchParams, Stack } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import PokeInfo from "./pokeInfo.jsx";
 import { View } from "react-native";
 
@@ -7,15 +7,6 @@ export default function Details() {
 
     return (
         <View style={{ flex: 1 }}>
-        <Stack.Screen
-            options={{
-                headerLeft: () => null,
-                headerRight: () => null,
-                headerTintColor: "black",
-                headerTitleStyle: { fontWeight: "bold" },
-                headerTitle: "Detalles",
-            }}
-        />
         <PokeInfo details={details} />
     </View>
     );

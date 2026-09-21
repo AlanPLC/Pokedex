@@ -1,13 +1,56 @@
 import { useEffect, useState } from "react";
+import { Stack } from "expo-router";
 import { usePokemonDetail } from "../hooks/usePokeApi.jsx";
-import { View, Text, Image, ActivityIndicator } from "react-native";
-import RainbowName from "../components/pokemonName.jsx";
-import typeImages from "../components/pokemonTypes.jsx";
+import useEvolutionChain from "../hooks/useEvolutionChain.js";
+import useTypeEffectiveness from "../hooks/useTypeEffectiveness.js";
+import useFavorites from "../hooks/useFavorites.js";
+import { ScrollView, View, Text, Image, ActivityIndicator, Pressable } from "react-native";
+import Animated, { LinearTransition } from "react-native-reanimated";
+import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
+import { Heart, Play, Sparkles } from "lucide-react-native";
+import TypeBadge from "../components/ui/TypeBadge.jsx";
+import Card from "../components/ui/Card.jsx";
+import SectionLabel from "../components/ui/SectionLabel.jsx";
+import StatBars from "../components/detail/StatBars.jsx";
+import EvolutionChain from "../components/detail/EvolutionChain.jsx";
+import TypeEffectiveness from "../components/detail/TypeEffectiveness.jsx";
+import Ubicaciones from "../components/detail/Ubicaciones.jsx";
+import { colors, spacing, radius, typography, cardShadow } from "../constants/theme.js";
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+const HeaderTitle = ({ name }) => (
+    <Text
+        style={{
+            fontSize: 24,
+            fontWeight: "bold",
+            color: "#fff",
+            textAlign: "center",
+            textShadowColor: "rgba(0,0,0,0.5)",
+            textShadowOffset: { width: 1, height: 1 },
+            textShadowRadius: 3,
+        }}
+    >
+        {name ? name.toUpperCase() : ""}
+    </Text>
+);
 
 export default function PokeInfo({ details }) {
     const { fetchPokemonById } = usePokemonDetail();
     const [pokemon, setPokemon] = useState(null);
+    const [mostrarShiny, setMostrarShiny] = useState(false);
     const pokemonId = Number(details);
+
+    const { esFavorito, toggleFavorito, equipoLleno } = useFavorites();
+    const { etapas: etapasEvolucion } = useEvolutionChain(pokemon?.evolutionChainUrl);
+    const { debilidades, resistencias, inmunidades, efectivoContra } = useTypeEffectiveness(pokemon?.types);
+    const player = useAudioPlayer(pokemon?.cryUrl ?? null);
+    const estadoAudio = useAudioPlayerStatus(player);
+
+    const reproducirGrito = async () => {
+        await player.seekTo(0);
+        player.play();
+    };
 
     const fetchPokemon = async () => {
         try {
@@ -19,108 +62,179 @@ export default function PokeInfo({ details }) {
     }
 
     useEffect(() => {
+        setMostrarShiny(false);
         fetchPokemon();
     }, [pokemonId]);
 
     if (!pokemon) {
         return (
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                <ActivityIndicator size="large" color="black" />
-            </View>
+            <>
+                <Stack.Screen
+                    options={{
+                        headerLeft: () => null,
+                        headerRight: () => null,
+                        headerTitleAlign: "center",
+                        headerTitle: () => <HeaderTitle name={null} />,
+                    }}
+                />
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                    <ActivityIndicator size="large" color={colors.primary} />
+                </View>
+            </>
         );
     }
-    const { image, id, name, species, description, height, weight, type } = pokemon;
-    
-    
+
+    const { image, shinyImage, name, species, description, height, weight, types, stats, cryUrl } = pokemon;
+    const esFav = esFavorito(pokemon.id);
+
     return (
-        <View style={{ flex: 1, padding: 22, alignItems:"center", backgroundColor:"white", gap:5}}>
-            {/* Imagen y Borde circular  */}
-            <View style={{
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 5 },
-                shadowOpacity: 0.3,
-                shadowRadius: 6,
-                elevation: 10,  // Para sombra en Android
-                borderColor: "#ffbc03",
-                borderRadius: 300,  // borde completamente redondeado
-                borderWidth: 4,
-                padding: 10,
-                backgroundColor: "#f5f5f5",
-            }}>
-            <Image 
-                source={{ uri: image }} 
-                style={{
-                    width: 200,
-                    height: 200,
-                    borderRadius: 100,  // imagen circular
-                }} 
+        <ScrollView
+            style={{ flex: 1, backgroundColor: colors.background }}
+            contentContainerStyle={{ padding: spacing.lg, alignItems: "center", gap: spacing.md }}
+        >
+            <Stack.Screen
+                options={{
+                    headerLeft: () => null,
+                    headerRight: () => null,
+                    headerTitleAlign: "center",
+                    headerTitle: () => <HeaderTitle name={name} />,
+                }}
             />
-            </View>
-            {/* ID y Nombre */}
-            <Text style={{ 
-                fontSize: 25, 
-                fontWeight: "bold", 
-                color:"#ffbc03", 
-                textShadowColor: 'rgba(0, 0, 0, 0.8)', 
-                textShadowOffset: { width: 1, height: 1 }, 
-                textShadowRadius: 3}}
-                >ID: #{id}
-            </Text>
-            <RainbowName name={name}/>      
 
-            {/* Tipos */}
-            <View style={{display:"flex", flexDirection:"row", gap:10, width:"100%", alignItems:"center"}}>
-                <Text style={{fontSize: 22, fontWeight:"bold"}}>TIPO</Text>
-                {(typeof type === "string" ? type.split(" ") : type).map((typeItem, index) => (
-                    typeImages[typeItem] ? (
-                    <Image key={index} source={typeImages[typeItem]} style={{ width: 40, height: 40 }} />
-                    ) : (
-                    <Text key={index} style={{ color: "red" }}>Tipo no encontrado</Text>
-                    )
-                ))}
-            </View>
-
-            {/* ESPECIE */}
-            <View style={{display:"flex", flexDirection:"row", gap:10, width:"100%", alignItems:"center",}}>
-                <Text style={{fontSize: 22, fontWeight:"bold", }}>ESPECIE</Text>
-                <Text 
+            <View
                 style={{
-                    marginBottom:2,
-                    fontSize: 22, 
-                    color:"#ffbc03", 
-                    fontWeight:"bold", 
-                    textShadowColor: 'rgba(0, 0, 0, 1)', 
-                    textShadowOffset: { width: 1, height: 1 }, 
-                    textShadowRadius: 3}}>{species}</Text>
+                    ...cardShadow,
+                    borderColor: colors.primary,
+                    borderRadius: radius.full,
+                    borderWidth: 4,
+                    padding: spacing.md,
+                    backgroundColor: colors.surface,
+                }}
+            >
+                <Image
+                    source={{ uri: mostrarShiny ? shinyImage : image }}
+                    style={{ width: 200, height: 200, borderRadius: 100 }}
+                />
             </View>
 
-            {/* DESCRIPCIÓN */}
-            <View style={{display:"flex", flexDirection:"column", width:"100%"}}>
-                <Text style={{fontSize: 22, fontWeight:"bold", marginBottom:3, marginTop:5}}>DESCRIPCIÓN</Text>
-                <Text style={{fontSize: 18, fontStyle:"italic", color:"#707070"}}>{description}</Text>
+            <View style={{ flexDirection: "row", gap: spacing.md }}>
+                <Pressable
+                    onPress={() => setMostrarShiny((prev) => !prev)}
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: spacing.xs,
+                        paddingVertical: spacing.xs,
+                        paddingHorizontal: spacing.md,
+                        borderRadius: radius.full,
+                        borderWidth: 1.5,
+                        borderColor: mostrarShiny ? colors.primary : colors.border,
+                        backgroundColor: mostrarShiny ? colors.primary : colors.background,
+                    }}
+                >
+                    <Sparkles size={18} color={mostrarShiny ? colors.background : colors.text} />
+                    <Text style={{ fontWeight: "bold", color: mostrarShiny ? colors.background : colors.text }}>Shiny</Text>
+                </Pressable>
+
+                {cryUrl ? (
+                    <AnimatedPressable
+                        onPress={reproducirGrito}
+                        layout={LinearTransition.duration(200)}
+                        style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            gap: spacing.xs,
+                            paddingVertical: spacing.xs,
+                            paddingHorizontal: spacing.md,
+                            borderRadius: radius.full,
+                            borderWidth: 1.5,
+                            borderColor: estadoAudio.playing ? colors.primary : colors.border,
+                            backgroundColor: estadoAudio.playing ? colors.primary : colors.background,
+                        }}
+                    >
+                        <Play size={18} color={estadoAudio.playing ? colors.background : colors.text} />
+                        <Text style={{ fontWeight: "bold", color: estadoAudio.playing ? colors.background : colors.text }}>
+                            {estadoAudio.playing ? "Sonando..." : "Grito"}
+                        </Text>
+                    </AnimatedPressable>
+                ) : null}
+
+                <Pressable
+                    onPress={() => toggleFavorito(pokemon)}
+                    disabled={!esFav && equipoLleno}
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: spacing.xs,
+                        paddingVertical: spacing.xs,
+                        paddingHorizontal: spacing.md,
+                        borderRadius: radius.full,
+                        borderWidth: 1.5,
+                        borderColor: esFav ? colors.danger : colors.border,
+                        opacity: !esFav && equipoLleno ? 0.4 : 1,
+                    }}
+                >
+                    <Heart size={18} color={esFav ? colors.danger : colors.text} fill={esFav ? colors.danger : "transparent"} />
+                    <Text style={{ fontWeight: "bold", color: esFav ? colors.danger : colors.text }}>Equipo</Text>
+                </Pressable>
             </View>
 
-            {/* Altura y Peso */}
-            <View style={{display:"flex", flexDirection:"row", width:"100%",}}>
-                <Text style={{fontSize: 22, fontWeight:"bold"}}>ALTURA </Text>
-                <Text 
-                style={{
-                    fontSize: 22, 
-                    fontWeight:"bold", 
-                    color:"#ffbc03", 
-                    textShadowColor: 'rgba(0, 0, 0, 1)', 
-                    textShadowOffset: { width: 1, height: 1 }, 
-                    textShadowRadius: 3}}>{height*10} cm</Text>
-                <Text style={{fontSize: 22, fontWeight:"bold", marginLeft:15}}>PESO </Text>
-                <Text 
-                style={{
-                    fontSize: 22, 
-                    color:"#ffbc03", 
-                    fontWeight:"bold", 
-                    textShadowColor: 'rgba(0, 0, 0, 1)', 
-                    textShadowOffset: { width: 1, height: 1 }, 
-                    textShadowRadius: 3}}>{weight*10}g</Text>
-            </View>
-        </View>
+            <Card style={{ gap: spacing.sm }}>
+                <SectionLabel>Tipo</SectionLabel>
+                <View style={{ flexDirection: "row", gap: spacing.sm, flexWrap: "wrap" }}>
+                    {types.map((typeItem) => (
+                        <TypeBadge key={typeItem} type={typeItem} />
+                    ))}
+                </View>
+            </Card>
+
+            <Card style={{ gap: spacing.sm }}>
+                <SectionLabel>Especie</SectionLabel>
+                <Text style={typography.value}>{species}</Text>
+            </Card>
+
+            <Card style={{ gap: spacing.sm }}>
+                <SectionLabel>Descripción</SectionLabel>
+                <Text style={{ fontSize: 16, fontStyle: "italic", color: colors.textMuted }}>{description}</Text>
+            </Card>
+
+            <Card>
+                <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                    <View style={{ alignItems: "center", gap: spacing.xs }}>
+                        <SectionLabel>Altura</SectionLabel>
+                        <Text style={typography.value}>{height * 10} cm</Text>
+                    </View>
+                    <View style={{ alignItems: "center", gap: spacing.xs }}>
+                        <SectionLabel>Peso</SectionLabel>
+                        <Text style={typography.value}>{weight * 10} g</Text>
+                    </View>
+                </View>
+            </Card>
+
+            <Card style={{ gap: spacing.sm }}>
+                <SectionLabel>Stats</SectionLabel>
+                <StatBars stats={stats} />
+            </Card>
+
+            <Card style={{ gap: spacing.sm, width: "100%" }}>
+                <SectionLabel>Evolución</SectionLabel>
+                <EvolutionChain etapas={etapasEvolucion} currentId={pokemon.id} />
+            </Card>
+
+            <Card style={{ gap: spacing.sm, width: "100%" }}>
+                <SectionLabel>Debilidades y resistencias</SectionLabel>
+                <TypeEffectiveness
+                    debilidades={debilidades}
+                    resistencias={resistencias}
+                    inmunidades={inmunidades}
+                    efectivoContra={efectivoContra}
+                />
+            </Card>
+
+            <Card style={{ gap: spacing.sm, width: "100%" }}>
+                <SectionLabel>Dónde encontrarlo</SectionLabel>
+                <Ubicaciones pokemonId={pokemon.id} />
+            </Card>
+        </ScrollView>
     );
 }
