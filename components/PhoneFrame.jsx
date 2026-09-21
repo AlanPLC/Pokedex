@@ -10,7 +10,6 @@ export default function PhoneFrame({ children }) {
   return (
     <View style={styles.fondo}>
       <View style={styles.telefono}>
-        <View style={styles.notch} />
         <View style={styles.pantalla}>{children}</View>
       </View>
     </View>
@@ -36,18 +35,9 @@ const styles = {
     borderRadius: 44,
     padding: 12,
     boxShadow: "0 25px 60px rgba(0,0,0,0.5)",
-  },
-  notch: {
-    position: "absolute",
-    top: 12,
-    left: "50%",
-    marginLeft: -60,
-    width: 120,
-    height: 24,
-    backgroundColor: "#000",
-    borderBottomLeftRadius: 16,
-    borderBottomRightRadius: 16,
-    zIndex: 10,
+    // Crea un "contexto de contención" en CSS: obliga a que cualquier hijo con position:fixed
+    // (como el header) quede acotado a este marco en vez de escaparse a la ventana del navegador.
+    transform: [{ translateZ: 0 }],
   },
   pantalla: {
     flex: 1,

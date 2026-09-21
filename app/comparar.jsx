@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { View, Text, Image, ScrollView, ActivityIndicator, TouchableOpacity } from "react-native";
-import { ArrowLeft } from "lucide-react-native";
+import { Stack, useLocalSearchParams } from "expo-router";
+import { View, Text, Image, ScrollView, ActivityIndicator } from "react-native";
 import PokemonPicker from "../components/compare/PokemonPicker.jsx";
 import StatBars from "../components/detail/StatBars.jsx";
 import TypeBadge from "../components/ui/TypeBadge.jsx";
 import Card from "../components/ui/Card.jsx";
+import { BackButton, HomeLogoButton } from "../components/HeaderNav.jsx";
 import { usePokemonDetail } from "../hooks/usePokeApi.jsx";
 import { colors, spacing } from "../constants/theme.js";
 
@@ -32,7 +32,6 @@ const Selector = ({ label, pokemon, isLoading, onPick }) => (
 
 export default function Comparar() {
   const { a, b } = useLocalSearchParams();
-  const router = useRouter();
   const [pokemonA, setPokemonA] = useState(null);
   const [pokemonB, setPokemonB] = useState(null);
   const [cargandoA, setCargandoA] = useState(false);
@@ -61,12 +60,8 @@ export default function Comparar() {
         options={{
           headerTitle: "Comparador",
           headerTitleAlign: "center",
-          headerRight: () => null,
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()} hitSlop={10}>
-              <ArrowLeft size={24} color="black" />
-            </TouchableOpacity>
-          ),
+          headerLeft: () => <BackButton />,
+          headerRight: () => <HomeLogoButton />,
         }}
       />
 

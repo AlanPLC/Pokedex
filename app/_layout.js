@@ -46,11 +46,11 @@ export default function Layout() {
   }, [seleccionados]);
 
   useEffect(() => {
-    if (searchVisible && inputRef.current) {
-      setTimeout(() => {
-        inputRef.current.focus();
-      }, 100);
-    }
+    if (!searchVisible) return;
+    const timeoutId = setTimeout(() => {
+      inputRef.current?.focus();
+    }, 100);
+    return () => clearTimeout(timeoutId);
   }, [searchVisible]);
 
   return (

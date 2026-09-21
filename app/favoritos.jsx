@@ -3,6 +3,7 @@ import { View, Text, FlatList } from "react-native";
 import { Heart } from "lucide-react-native";
 import useFavorites from "../hooks/useFavorites.js";
 import PokemonItem from "../components/pokemonItem.jsx";
+import { BackButton, HomeLogoButton } from "../components/HeaderNav.jsx";
 import { colors, spacing } from "../constants/theme.js";
 
 export default function Favoritos() {
@@ -14,7 +15,8 @@ export default function Favoritos() {
         options={{
           headerTitle: `Mi equipo (${favoritos.length}/${maxEquipo})`,
           headerTitleAlign: "center",
-          headerRight: () => null,
+          headerLeft: () => <BackButton />,
+          headerRight: () => <HomeLogoButton />,
         }}
       />
       {cargado && favoritos.length === 0 ? (

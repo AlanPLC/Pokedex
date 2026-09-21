@@ -15,6 +15,7 @@ import StatBars from "../components/detail/StatBars.jsx";
 import EvolutionChain from "../components/detail/EvolutionChain.jsx";
 import TypeEffectiveness from "../components/detail/TypeEffectiveness.jsx";
 import Ubicaciones from "../components/detail/Ubicaciones.jsx";
+import { BackButton, HomeLogoButton } from "../components/HeaderNav.jsx";
 import { colors, spacing, radius, typography, cardShadow } from "../constants/theme.js";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -71,8 +72,8 @@ export default function PokeInfo({ details }) {
             <>
                 <Stack.Screen
                     options={{
-                        headerLeft: () => null,
-                        headerRight: () => null,
+                        headerLeft: () => <BackButton />,
+                        headerRight: () => <HomeLogoButton />,
                         headerTitleAlign: "center",
                         headerTitle: () => <HeaderTitle name={null} />,
                     }}
@@ -94,8 +95,8 @@ export default function PokeInfo({ details }) {
         >
             <Stack.Screen
                 options={{
-                    headerLeft: () => null,
-                    headerRight: () => null,
+                    headerLeft: () => <BackButton />,
+                    headerRight: () => <HomeLogoButton />,
                     headerTitleAlign: "center",
                     headerTitle: () => <HeaderTitle name={name} />,
                 }}
