@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
 
+const getSpanishDescription = (entries) =>
+  entries.find((entry) => entry.language.name === 'es')?.flavor_text.replace(/\n/g, ' ') || 'No hay descripción disponible.';
+
 export default function useFetchPokemons() {
   const [listaPokemon, setListaPokemon] = useState([]);
   const [error, setError] = useState(null);
@@ -38,16 +41,16 @@ export default function useFetchPokemons() {
             id,
             name: pokemon.name,
             image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
-            description: especiesPokemon.flavor_text_entries.find((s) => s.language.name === 'es')?.flavor_text.replace(/\n/g, ' ') || 'No hay descripción disponible.',
+            description: getSpanishDescription(especiesPokemon.flavor_text_entries),
 
           };
         })
       );
-      setListaPokemon((prev)=> [...prev,...listaDetallada]);  
+      setListaPokemon((prev)=> [...prev,...listaDetallada]);
       setIsFetchingMore(false);
     } catch (error) {
       console.error(`Error en el Fetch a detalles pokemon`, error);
-      setError(error.message);  
+      setError(error.message);
       setIsFetchingMore(false);
     }
   };
@@ -64,7 +67,11 @@ export default function useFetchPokemons() {
     }
   };
 
-  // Carga un pokemon especifico por su ID
+  return { listaPokemon, error, limite, isFetchingMore, hasMore, handleLoadMore};
+}
+
+// Carga los detalles completos de un único pokemon por su ID, sin depender del listado paginado.
+export function usePokemonDetail() {
   const fetchPokemonById = async (id) => {
     try {
       const pokemonRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}/`);
@@ -73,43 +80,22 @@ export default function useFetchPokemons() {
       }
 
       const pokemon = await pokemonRes.json();
-      
+
       const detailsRes = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`);
       if (!detailsRes.ok) {
         throw new Error(`Error HTTP ${detailsRes.status}`);
       }
       const detallesPokemon = await detailsRes.json();
 
-      const abilities = await Promise.all(
-        detallesPokemon.abilities.map(async (ability) => {
-            const abilityRes = await fetch(ability.ability.url);
-            if (!abilityRes.ok) {
-                throw new Error(`Error HTTP ${abilityRes.status}`);
-            }
-            const abilityDetails = await abilityRes.json();
-            
-            // Filtrar la descripción en español
-            const effectEntry = abilityDetails.flavor_text_entries.find(
-                (entry) => entry.language.name === "es"
-            );
-            
-            return {
-                name: ability.ability.name,
-                description: effectEntry
-            };
-        })
-    );
-
       return {
         id,
         name: pokemon.name,
-        type: detallesPokemon.types.map((type) => type.type.name).join(' '), 
+        type: detallesPokemon.types.map((type) => type.type.name).join(' '),
         height: detallesPokemon.height,
         weight: detallesPokemon.weight,
         image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
         species: pokemon.genera.length > 5 ? pokemon.genera[5].genus : 'Desconocido',
-        description: pokemon.flavor_text_entries.find((s) => s.language.name === 'es')?.flavor_text.replace(/\n/g, ' ') || 'No hay descripción disponible.',
-        abilities
+        description: getSpanishDescription(pokemon.flavor_text_entries),
       };
     } catch (error) {
       console.error("Error al obtener detalles del Pokémon", error);
@@ -117,5 +103,5 @@ export default function useFetchPokemons() {
     }
   };
 
-  return { listaPokemon, error, limite, isFetchingMore, hasMore, fetchPokemonById, handleLoadMore};
+  return { fetchPokemonById };
 }

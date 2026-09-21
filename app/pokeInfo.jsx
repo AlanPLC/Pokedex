@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import useFetchPokemons from "../hooks/usePokeApi.jsx";
+import { usePokemonDetail } from "../hooks/usePokeApi.jsx";
 import { View, Text, Image, ActivityIndicator } from "react-native";
 import RainbowName from "../components/pokemonName.jsx";
 import typeImages from "../components/pokemonTypes.jsx";
 
 export default function PokeInfo({ details }) {
-    const { fetchPokemonById } = useFetchPokemons();
+    const { fetchPokemonById } = usePokemonDetail();
     const [pokemon, setPokemon] = useState(null);
     const pokemonId = Number(details);
 
@@ -29,8 +29,7 @@ export default function PokeInfo({ details }) {
             </View>
         );
     }
-    console.log(pokemon)
-    const { image, id, name, species, description, height, weight, type, abilities} = pokemon;
+    const { image, id, name, species, description, height, weight, type } = pokemon;
     
     
     return (

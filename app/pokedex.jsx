@@ -7,7 +7,7 @@ import PokemonItem from "../components/pokemonItem.jsx";
 import SinResultados from "../components/sinResultados.jsx"; 
 
 export default function Pokedex() {
-  const { listaPokemon, error, isFetchingMore, hasMore, handleLoadMore, isFetching } = useFetchPokemons();
+  const { listaPokemon, error, isFetchingMore, hasMore, handleLoadMore } = useFetchPokemons();
   const { search, setSearch } = useContext(SearchContext);
 
   const filteredPokemons = listaPokemon.filter((pokemon) =>
@@ -16,10 +16,10 @@ export default function Pokedex() {
   const shouldHasMore = !search && hasMore;
 
   useEffect(() => {
-    if (filteredPokemons.length === 0 && !isFetching) {
+    if (listaPokemon.length > 0 && filteredPokemons.length === 0 && !isFetchingMore) {
       handleLoadMore();
     }
-  }, [filteredPokemons, isFetching]);
+  }, [filteredPokemons, listaPokemon, isFetchingMore]);
 
   if (error) {
     return (

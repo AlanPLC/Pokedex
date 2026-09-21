@@ -40,16 +40,16 @@ export default function Layout() {
             <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
               {!searchVisible ? (
                 <TouchableOpacity
-                  onPressOut={handleSearch}
+                  onPress={handleSearch}
                   hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                   style={{ margin: 0 }}
                 >
-                  <AntDesign name="search1" size={25} color="black" style={{ marginRight: 5 }} />
+                  <AntDesign name="search" size={25} color="black" style={{ marginRight: 5 }} />
                 </TouchableOpacity>
               ) : (
                 <>
                   <TouchableOpacity
-                    onPressOut={handleSearch}
+                    onPress={handleSearch}
                     hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                     style={{ margin: 0 }}
                   >
