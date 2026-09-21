@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View, Text, Pressable, ActivityIndicator } from "react-native";
-import { ChevronDown, ChevronUp } from "lucide-react-native";
+import { ChevronDown, ChevronUp, MapPin } from "lucide-react-native";
 import useEncounters from "../../hooks/useEncounters.js";
 import { translateVersion } from "../../constants/versionNames.js";
 import { colors, spacing } from "../../constants/theme.js";
@@ -45,9 +45,12 @@ export default function Ubicaciones({ pokemonId }) {
                     key={encuentro.location_area.name}
                     style={{ paddingBottom: spacing.sm, borderBottomWidth: 1, borderBottomColor: colors.border }}
                   >
-                    <Text style={{ fontWeight: "bold", color: colors.text }}>
-                      {formatearNombreZona(encuentro.location_area.name)}
-                    </Text>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: spacing.xs }}>
+                      <MapPin size={14} color={colors.primary} />
+                      <Text style={{ fontWeight: "bold", color: colors.text }}>
+                        {formatearNombreZona(encuentro.location_area.name)}
+                      </Text>
+                    </View>
                     <Text style={{ color: colors.textMuted, fontSize: 13 }}>{juegos.join(", ")}</Text>
                   </View>
                 );

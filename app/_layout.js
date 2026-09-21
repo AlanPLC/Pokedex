@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from "react";
-import { View, Image, TextInput, TouchableOpacity } from "react-native";
+import { Image, TextInput, TouchableOpacity } from "react-native";
 import { Stack, useRouter } from "expo-router";
+import Animated, { LinearTransition } from "react-native-reanimated";
 import logo from "../assets/pokebola.png";
-import { Search, X, Heart, GitCompare } from "lucide-react-native";
+import { Search, X, Heart, GitCompare, Home as HomeIcon } from "lucide-react-native";
 import { SearchContext } from "../hooks/searchContext.js";
 import { CompareContext } from "../hooks/compareContext.js";
+import PhoneFrame from "../components/PhoneFrame.jsx";
 import { colors, spacing, radius } from "../constants/theme.js";
 
 export default function Layout() {
@@ -52,6 +54,7 @@ export default function Layout() {
   }, [searchVisible]);
 
   return (
+    <PhoneFrame>
     <SearchContext.Provider value={{ search, setSearch }}>
       <CompareContext.Provider value={{ compareMode, seleccionados, toggleSeleccionado }}>
         <Stack
@@ -66,7 +69,10 @@ export default function Layout() {
               </TouchableOpacity>
             ),
             headerRight: () => (
-              <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: spacing.md }}>
+              <Animated.View
+                layout={LinearTransition.duration(220)}
+                style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: spacing.md }}
+              >
                 {!searchVisible ? (
                   <>
                     <TouchableOpacity
@@ -82,6 +88,9 @@ export default function Layout() {
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => router.push("/favoritos")} hitSlop={10}>
                       <Heart size={24} color="black" />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => router.push("/")} hitSlop={10}>
+                      <HomeIcon size={24} color="black" />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={handleSearch} hitSlop={10} style={{ marginRight: 5 }}>
                       <Search size={24} color="black" />
@@ -111,11 +120,12 @@ export default function Layout() {
                     />
                   </>
                 )}
-              </View>
+              </Animated.View>
             ),
           }}
         />
       </CompareContext.Provider>
     </SearchContext.Provider>
+    </PhoneFrame>
   );
 }

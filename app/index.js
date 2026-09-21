@@ -1,6 +1,6 @@
-    import Pokedex from "./pokedex.jsx"
+import Home from "./home.jsx"
 
-    export default function Index(){
+export default function Index(){
 
-        return <Pokedex />
-    }
+    return <Home />
+}
