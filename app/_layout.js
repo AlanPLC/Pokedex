@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from "react";
-import { Image, TextInput, TouchableOpacity } from "react-native";
+import { TextInput, TouchableOpacity } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import Animated, { LinearTransition } from "react-native-reanimated";
-import logo from "../assets/pokebola.png";
 import { Search, X, Heart, GitCompare, Home as HomeIcon } from "lucide-react-native";
 import { SearchContext } from "../hooks/searchContext.js";
 import { CompareContext } from "../hooks/compareContext.js";
 import PhoneFrame from "../components/PhoneFrame.jsx";
+import PokeballIcon from "../components/PokeballIcon.jsx";
 import { colors, spacing, radius } from "../constants/theme.js";
 
 export default function Layout() {
@@ -63,9 +63,11 @@ export default function Layout() {
             headerTintColor: "black",
             headerTitle: "Pokedex",
             headerTitleStyle: { fontWeight: "bold" },
+            headerLeftContainerStyle: { paddingLeft: spacing.lg },
+            headerRightContainerStyle: { paddingRight: spacing.lg },
             headerLeft: () => (
               <TouchableOpacity onPress={() => router.push("/")} hitSlop={10}>
-                <Image source={logo} style={{ width: 50, height: 50 }} />
+                <PokeballIcon size={40} />
               </TouchableOpacity>
             ),
             headerRight: () => (
